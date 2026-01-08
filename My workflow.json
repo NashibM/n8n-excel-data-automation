@@ -1,0 +1,190 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10,
+              "triggerAtMinute": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -928,
+        -480
+      ],
+      "id": "5f277f7f-2ed6-49f9-8a25-d22592d8c423",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -544,
+        -416
+      ],
+      "id": "7dceb79d-5277-4123-9fd3-48f7537ee799",
+      "name": "Extract from File",
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": "9D57CD6BAA13F4C9!s0540a4f06dc64b57b8abdbd650a17582"
+      },
+      "type": "n8n-nodes-base.microsoftOneDrive",
+      "typeVersion": 1,
+      "position": [
+        -752,
+        -96
+      ],
+      "id": "554a33eb-5331-4ea3-85a9-1c6e3607167b",
+      "name": "Download a file",
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "microsoftOneDriveOAuth2Api": {
+          "id": "Cze39lfyfaPmXz4i",
+          "name": "Microsoft Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const r = item.json;\n\n  return {\n    json: {\n      Name: r.Name || \"Unknown\",\n      Email: r.Email || \"noemail@gmail.com\",\n      Sales: r.Sales ? Number(r.Sales) : 0,\n      Date: r.Date || new Date().toISOString().slice(0,10)\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -336,
+        -112
+      ],
+      "id": "13e1f8aa-085c-4294-b2c4-d4a617f7cb86",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        -448
+      ],
+      "id": "6dc86611-9f47-4182-81a7-9ff165610dd6",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "fileName": "Nashib_Automation.xlsx",
+        "parentId": "9D57CD6BAA13F4C9!126",
+        "binaryData": true
+      },
+      "type": "n8n-nodes-base.microsoftOneDrive",
+      "typeVersion": 1,
+      "position": [
+        48,
+        -128
+      ],
+      "id": "6cf93539-f028-4d86-8704-147fc9274555",
+      "name": "Upload a file",
+      "credentials": {
+        "microsoftOneDriveOAuth2Api": {
+          "id": "Cze39lfyfaPmXz4i",
+          "name": "Microsoft Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Download a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download a file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Upload a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload a file": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "921519ff-44e5-410d-af8e-5225948295e0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c4dab588f8535339a8c6cfbb2d4a4a1cfaa518dc68e571b7ca45aa9b0a3879f9"
+  },
+  "id": "z3fsGmPOvpSZqsWq",
+  "tags": []
+}
